@@ -1,9 +1,8 @@
-package homework;
 
 import java.io.*;
 import java.util.*;
 
-public class 색종이붙이기 {
+public class Main {
     public static int [][] board = new int[10][10];
     public static int answer = -1;
     static int[] squareCnt = {0,5,5,5,5,5};

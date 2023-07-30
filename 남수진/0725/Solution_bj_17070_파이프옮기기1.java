@@ -42,7 +42,6 @@ public class Solution_bj_17070_파이프옮기기1{
 				dfs(1, x + 1, y);
 			}
 		}
-	
 		// 대각선 이동 
 		if(x + 1 < N && y+ 1 < N) {
 			if( map[x + 1][y] == 0&& map[x][y + 1] == 0 && map[x+1][y+1] == 0) 

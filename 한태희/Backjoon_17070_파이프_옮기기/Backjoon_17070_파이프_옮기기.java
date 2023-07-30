@@ -40,25 +40,7 @@ public class Backjoon_17070_파이프_옮기기
 					res_Arr[i][j][2] = res_Arr[i-1][j][1] + res_Arr[i-1][j][2];
 				}
 
-				if(isValid(obst_Arr, N, i, j-1) && !isValid(obst_Arr, N, i-1, j-1) && isValid(obst_Arr, N, i-1, j)){
-					res_Arr[i][j][0] = res_Arr[i][j-1][0];
-					res_Arr[i][j][2] = res_Arr[i-1][j][2];
-				}
 
-				if(isValid(obst_Arr, N, i, j-1) && isValid(obst_Arr, N, i-1, j-1) && !isValid(obst_Arr, N, i-1, j)){
-					res_Arr[i][j][0] = res_Arr[i][j-1][0] + res_Arr[i][j-1][1];
-				}
-
-				if(!isValid(obst_Arr, N, i, j-1) && isValid(obst_Arr, N, i-1, j-1) && isValid(obst_Arr, N, i-1, j)){
-					res_Arr[i][j][2] = res_Arr[i-1][j][1] + res_Arr[i-1][j][2];
-				}
-
-				if(isValid(obst_Arr, N, i, j-1) && !isValid(obst_Arr, N, i-1, j-1) && !isValid(obst_Arr, N, i-1, j)){
-					res_Arr[i][j][0] = res_Arr[i][j-1][0];
-				}
-				if(!isValid(obst_Arr, N, i, j-1) && !isValid(obst_Arr, N, i-1, j-1) && isValid(obst_Arr, N, i-1, j)){
-					res_Arr[i][j][2] = res_Arr[i-1][j][2];
-				}
 			}
 		}
 		
