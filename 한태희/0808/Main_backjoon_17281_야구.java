@@ -58,6 +58,7 @@ public class Main_backjoon_17281_야구 {
 		//for(int [] www:perms) System.out.println(Arrays.toString(www));
 		System.out.println(max_point);
 
+		br.close();
 	}
 	
 	private static int movePlayers(int[] bases, int swing) {

@@ -49,6 +49,8 @@ public class Main_backjoon_17406_배열_돌리기_4 {
 		perm(0);
 		
 		System.out.println(total_min);
+
+		br.close();
 	}
 	
 	static void perm(int cnt) {
