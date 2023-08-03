@@ -53,8 +53,11 @@ public class Main_backjoon_17406_배열_돌리기_4 {
 	
 	static void perm(int cnt) {
 		if(cnt==K) {
+			//원본 배열로부터 시작 상태를 복구한다.
 			deepcopyOrigin();
 			for(int i=0;i<K;i++) {
+				//순열 정보에 저장된 값을 인덱스로 오퍼레이션의 순서를 정하고,
+				//해당 오퍼레이션 정보로 배열을 돌린다.
 				int idx = b[i];
 				int [] op = operations[idx];
 				spinArr(op);
