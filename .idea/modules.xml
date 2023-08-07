@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Algorithm.iml" filepath="$PROJECT_DIR$/.idea/Algorithm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/김준엽/김준엽.iml" filepath="$PROJECT_DIR$/김준엽/김준엽.iml" />
+      <module fileurl="file://$PROJECT_DIR$/김지현/김지현.iml" filepath="$PROJECT_DIR$/김지현/김지현.iml" />
+      <module fileurl="file://$PROJECT_DIR$/남수진/남수진.iml" filepath="$PROJECT_DIR$/남수진/남수진.iml" />
+      <module fileurl="file://$PROJECT_DIR$/전소영/전소영.iml" filepath="$PROJECT_DIR$/전소영/전소영.iml" />
+      <module fileurl="file://$PROJECT_DIR$/한태희/한태희.iml" filepath="$PROJECT_DIR$/한태희/한태희.iml" />
+    </modules>
+  </component>
+</project>

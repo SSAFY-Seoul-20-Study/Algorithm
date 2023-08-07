@@ -1,49 +1,123 @@
-package study;
 
 import java.util.*;
 import java.io.*;
-public class Main_17281 {
-	static int N;
-	static int [][] sunsu;
-	static int []likeSunsu;
-	static int [] dummy = new int[8];
-	static int prevHitter = 0;
-	public static void main(String[] args) throws Exception{
-		System.setIn(new FileInputStream("study/input.txt"));
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
+public class Main {
+    static int N;
+    static int [][] sunsu;
+    static int[] lineUp;
+    static boolean [] visited;
+    static int ans;
+    public static void main(String[] args) throws Exception{
+        System.setIn(new FileInputStream("study/input.txt"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-		N = Integer.parseInt(st.nextToken());
-		likeSunsu = new int[N];
-		sunsu = new int [N][8];
-		//입력
-		for(int i=0; i<N; i++) {
-			st = new StringTokenizer(br.readLine());
-			likeSunsu[i] = Integer.parseInt(st.nextToken());
-			for(int j=0; j<8; j++) sunsu[i][j] = Integer.parseInt(st.nextToken());
-		}
-		
-		for(int i =0; i<N; i++) {
-			comb(0,0,i);
-		}
-		
-		
-	}
-	static void comb(int depth , int start, int inning) {
-		if(depth == 8) {
-			System.out.println(Arrays.toString(dummy));
-			return;
-		}
-		for(int i=start; i<8; i++) {
-			dummy[depth] = sunsu[inning][i];
-			comb(depth+1, start+1, inning);
-		}
-	}
-	static void simulation() {
-		//prevHitter부터 시작 + 9번타자 이후에 %를 이용하여 0번 타자로 시작하는 무한반복문
-		int outCount = 0;
-		int score = 0;
-		
-	}
-	
+        N = Integer.parseInt(st.nextToken());
+        sunsu = new int [N+1][10];
+        //입력
+        for(int i=1; i<=N; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 1; j <= 9; j++) {
+                sunsu[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+        visited = new boolean[10];
+        lineUp = new int[10];
+
+        visited[4] = true;
+        lineUp[4] = 1;
+
+        ans = 0;
+        comb(2);
+        System.out.println(ans);
+
+    }
+    static void comb(int depth) {
+        if(depth == 10) {
+            simulation();
+            return;
+        }
+        for(int i=1; i<=9; i++) {
+            if(visited[i]) continue;
+            visited[i] = true;
+            lineUp[i] = depth;
+            comb(depth+1);
+            visited[i] = false;
+        }
+    }
+    static void simulation() {
+        int score = 0;
+        int startPlayer = 1;
+        boolean[] base;
+
+        for (int i = 1; i <= N; i++) {
+            int out = 0;
+            base = new boolean[4];
+            flag:while (true) {
+                for (int j = startPlayer; j <= 9; j++) {
+                    int hitter = sunsu[i][lineUp[j]];
+                    switch (hitter) {
+                        case 0:
+                            out++;
+                            break;
+                        case 1:
+                            for (int k = 3; k >= 1; k--) {
+                                if (base[k]) {
+                                    if (k == 3) {
+                                        score++;
+                                        base[k] = false;
+                                        continue;
+                                    }
+                                    base[k] = false;
+                                    base[k + 1] = true;
+                                }
+                            }
+                            base[1] = true;
+                            break;
+                        case 2:
+                            for (int k = 3; k >= 1; k--) {
+                                if (base[k]) {
+                                    if (k == 3 || k == 2) {
+                                        score++;
+                                        base[k] = false;
+                                        continue;
+                                    }
+                                    base[k] = false;
+                                    base[k + 2] = true;
+                                }
+                            }
+                                base[2] = true;
+                                break;
+                        case 3:
+                            for (int k = 3; k >= 1; k--) {
+                                if (base[k]) {
+                                    score++;
+                                    base[k] = false;
+                                }
+                            }
+                            base[3] = true; // 홈에서 3루로 진루.
+                            break;
+                        case 4:
+                            for (int k = 1; k <= 3; k++) {
+                                if (base[k]) {
+                                    score++;
+                                    base[k] = false;
+                                }
+                            }
+                            score++;
+                            break;
+                    }
+                    if (out == 3) {
+                        startPlayer = j + 1;
+                        if (startPlayer == 10) {
+                            startPlayer = 1;
+                        }
+                        break flag;
+                    }
+                }
+                startPlayer = 1;
+            }
+        }
+        ans = Math.max(ans,score);
+    }
 }
