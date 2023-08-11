@@ -203,7 +203,7 @@ public class BJ17472 {
         }
 
         // dist가 짧은 다리부터 뽑아 섬 연결하기
-        int cntOfConnected = 0;         // 연결된 섬의 개수
+        int cntOfSelected = 0;         // 선택된 다리의 개수
         while(!bridges.isEmpty()) {
             Bridge poll = bridges.poll();
 
@@ -211,8 +211,8 @@ public class BJ17472 {
 
             // poll한 다리의 두 섬이 연결된 섬이 아니라면
             ans += poll.dist;
-            cntOfConnected++;
-            if(cntOfConnected == parent.length - 2) return;      // (다리의 개수 - 1) 만큼 연결되었을 때, 종료
+            cntOfSelected++;
+            if(cntOfSelected == parent.length - 2) return;      // (섬의 개수 - 1) 만큼 연결되었을 때, 종료
         }
 
         ans = -1;
