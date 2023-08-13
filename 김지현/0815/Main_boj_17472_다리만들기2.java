@@ -3,201 +3,158 @@ package study_algo;
 import java.util.*;
 import java.io.*;
 
+// 14344KB	124ms
 public class Main_boj_17472_다리만들기2 {
 	
-	static int N, M, res=Integer.MAX_VALUE;
-	static int[][] map,copy_map;
+	static int N, M;
+	static int[][] map;
 	static boolean[][] v;
 	static final int[] dx = {-1, 0, 1, 0};
 	static final int[] dy = {0, -1, 0, 1};
-	static List<int[]> bridges = new ArrayList<int[]>();
-	static int[] sel;
+	static ArrayList<Node>[] list;
+	static PriorityQueue<Mst_Node> pq;
+	static int[] parent;
 	
 	
 	public static void main(String[] args) throws Exception {
-		System.setIn(new FileInputStream("res/input_boj_17472.txt"));
+//		System.setIn(new FileInputStream("res/input_boj_17472.txt"));
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		
+		// 입력받기 
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
 		map = new int[N][M];
-		copy_map = new int[N][M];
 		
 		for(int i=0; i<N; i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j=0; j<M; j++) {
-				int temp = Integer.parseInt(st.nextToken());
-				map[i][j] = temp;
+				map[i][j] = Integer.parseInt(st.nextToken());
 			}
 		}
 		
-		// 놓을 수 있는 모든 다리 놓기(다리 2이상)
-		FindRowRangeBridge();
-		FindColRangeBridge();
-		copy_map = copyArr(map);
-		for(int[] s: copy_map) System.out.println(Arrays.toString(s));
-		
-		
-		// 하나씩 빼보기(섬에 1개 최소 1개 이상 다리는 있어야함.)
-			// 빼면서, 모두 연결되어 있는지 확인. (dfs로 덩어리 개수->1개 여야함)
-//		for(int[] b:bridges) System.out.println(Arrays.toString(b));
-		
-		// 전체 다리 연결 했을 때도, 연결되지 않는 경우 체크.
-		if(!isAllConnected()) {
-			System.out.println(-1);
-			System.exit(0);
-		}
-		// 전체 연결된 다리 개수 저장
-		res = Math.min(res, CountBridge());
-		
-		// 빼는 개수(1개- ~ 다리 개수(전체 다리 빼)
-		for(int sub_cnt=1; sub_cnt<bridges.size(); sub_cnt++) {
-			sel = new int[sub_cnt];
-			map = copyArr(copy_map);
-			comb(sub_cnt, 0, 0);
+		// 섬끼리 다른 숫자 저장하기. -> bfs
+		list = new ArrayList[7];
+		v = new boolean[N][M];
+		int num = 1;
+		for(int i=0; i<N; i++) {
+			for(int j=0; j<M; j++) {
+				if(!v[i][j] && map[i][j] == 1) {
+					list[num] = new ArrayList<>();
+					bfs(i,j, num++);
+				}
+			}
 		}
 		
 		
-		// 연결되어 있으면 최소 다리 개수 갱신.
-		if(isAllConnected()) {
-			res = Math.min(res, CountBridge());
+		//각 섬에 연결할 수 있는 다리 모두 구해서 pq에 저장.
+		pq = new PriorityQueue<>();
+		for(int i=1; i<num; i++) { // num : 섬의 개수+1
+			for(int j=0; j<list[i].size(); j++) { // 한 섬의 개수(크기)만큼
+				Node n = list[i].get(j);
+				for(int k=0; k<4; k++) {
+					find_bridge(n.x, n.y, i, k, -1);
+				}
+			}
 		}
-		System.out.println(res);
+		
+		System.out.println(kruskal(num));
 		br.close();
 	}
 	
-	private static void removeBridge() {
-		for(int i=0; i<sel.length; i++) {
-			int[] tmp = bridges.get(sel[i]);
-			if(tmp[0] == 0) { // 행인 경우
-				for(int y=tmp[2]; y<tmp[3]; y++) {
-					map[tmp[1]][y] = 0;
-				}
-			}else if(tmp[0] == 1) { // 열인 경우
-				for(int x=tmp[2]; x<tmp[3]; x++) {
-					map[x][tmp[1]] = 7; // 다리 7로 설정.
-				}
+	private static int kruskal(int num) {
+		parent = new int[num];
+		for(int i=1; i<num; i++) {
+			parent[i] = i; // 자기 자신을 부모 배열에 초기화.
+		}
+		boolean[] link = new boolean[num];
+		int res = 0;
+		int bridge = 0;
+		while(!pq. isEmpty()) {
+			Mst_Node cur = pq.poll();
+			
+			int p1 = find(cur.n1);
+			int p2 = find(cur.n2);
+			
+			if(p1 != p2) {
+				union(p1, p2);
+				link[cur.n1] = true;
+				link[cur.n2] = true;
+				res += cur.length;
+				bridge++;
 			}
 		}
+		if(res == 0) return -1;
+		if(bridge != num -2) return -1;
+		return res;
 	}
 	
-	private static void comb(int length, int cnt, int start) {
-		if(cnt == length) {
-			removeBridge();
-			// 연결되어 있으면 최소 다리 개수 갱신.
-			if(isAllConnected()) {
-				res = Math.min(res, CountBridge());
-//				System.out.println(length+" "+Arrays.toString(sel)+res);
-			}
+	private static void union(int a, int b) {
+		parent[a] = b;
+	}
+	
+	private static int find(int x) {
+		if(parent[x] == x) return x;
+		return find(parent[x]);
+	}
+	
+	private static void find_bridge(int x, int y, int num, int dir, int len) {
+		if(map[x][y] != 0 && map[x][y] != num) { // 다른 섬일 때
+			if(len >= 2) pq.offer(new Mst_Node(num, map[x][y], len)); // 다리 길이가 2이상일 때만 
 			return;
 		}
-		for(int i=start; i<bridges.size(); i++) {
-			sel[cnt] = i;
-			comb(length, cnt+1, i+1);
-		}
-	}
-	
-	// 모든 섬이 연결되어 있는 지 확인.
-	private static boolean isAllConnected() {
-		int cntGroup=0;
-		v = new boolean[N][M];
 		
-		for(int i=0; i<N; i++) {
-			for(int j=0; j<M; j++) {
-				if(map[i][j]==1 && !v[i][j]) {
-					bfs(i, j);
-					cntGroup++;
-				}
-			}
+		int nx = x + dx[dir];
+		int ny = y + dy[dir];
+		if(0 <= nx && nx < N && 0 <= ny && ny < M && map[nx][ny] != num) {
+			find_bridge(nx, ny, num, dir, len+1);
 		}
-		if(cntGroup==1) return true; // 덩어리가 1개면 모두 연결
-		return false;
 	}
-	
-	private static void bfs(int i, int j) {
-		Queue<int[]> q = new ArrayDeque<>();
-		q.offer(new int[] {i,j});
+
+	private static void bfs(int i, int j, int num) {
+		Queue<Node> q = new ArrayDeque<>();
+		q.offer(new Node(i,j));
 		v[i][j] = true;
 		
 		while(!q.isEmpty()) {
-			int[] cur = q.poll();
+			Node cur = q.poll();
+			
+			map[cur.x][cur.y] = num;
+			list[num].add(new Node(cur.x, cur.y));
+			
 			for(int d=0; d<4; d++) {
-				int nx = cur[0] + dx[d];
-				int ny = cur[1] + dy[d];
-				if(0<=nx && nx<N && 0<=ny && ny<M && !v[nx][ny]) {
-					q.offer(new int[] {nx,ny});
+				int nx = cur.x + dx[d];
+				int ny = cur.y + dy[d];
+				if(0<=nx && nx<N && 0<=ny && ny<M && !v[nx][ny] && map[nx][ny]==1) {
+					q.offer(new Node(nx,ny));
 					v[nx][ny] = true;
 				}
 			}
 		}
 	}
+	
+	// Mst_Node class 정의
+	private static class Mst_Node implements Comparable<Mst_Node> {
+		int n1, n2, length;
+		
+		public Mst_Node(int n1, int n2, int length) {
+			this.n1 = n1;
+			this.n2 = n2;
+			this.length = length;
+		}
 
-	private static int CountBridge() {
-		int cnt = 0;
-		for(int i=0; i<N; i++) {
-			for(int j=0; j<M; j++) {
-				if(map[i][j] == 7) cnt++;
-			}
-		}
-		return cnt;
-	}
-	
-	// 행에 다리 놓기(10 -> 01 으로 변하는 지점)
-	private static void FindRowRangeBridge() {
-		for(int i=0; i<N; i++) {
-			int left = -1; // 섬을 계산하기 위한 열의 인덱스
-			for(int j=0; j<M-1; j++) {
-				if(map[i][j]==1 && map[i][j+1]==0) {
-					left = j+1;
-				}else if(map[i][j] == 0 && map[i][j+1]==1) {
-					if(left != -1 && (j-left)>=1) {
-						SetRowBridgeInRange(i, left, j+1);
-						left = -1;
-					}
-				}
-				
-			}
-		}
-	}
-	// 열에 다리 놓기
-	private static void FindColRangeBridge() {
-		for(int j=0; j<M; j++) {
-			int up = -1; // 섬을 계산하기 위한 행의 인덱스
-			for(int i=0; i<N-1; i++) {
-				if(map[i][j]==1 && map[i+1][j]==0) {
-					up = i+1;
-				}else if(map[i][j] == 0 && map[i+1][j]==1) {
-					if(up != -1 && (i-up)>=1) {
-						SetColBridgeInRange(j, up, i+1);
-						up = -1;
-					}
-				}	
-			}
+		@Override
+		public int compareTo(Mst_Node o) {
+			return this.length - o.length; // 길이로 비교
 		}
 	}
 	
-	private static void SetRowBridgeInRange(int x, int left, int right) {
-		for(int j=left; j<right; j++) {
-			map[x][j] = 7; // 다리 7로 설정.
+	private static class Node{
+		int x, y;
+		
+		public Node(int x, int y) {
+			this.x = x;
+			this.y = y;
 		}
-		bridges.add(new int[] {0, x, left, right}); // bridges 리스트에 저장
-	}
-	private static void SetColBridgeInRange(int y, int up, int down) {
-		for(int i=up; i<down; i++) {
-			map[i][y] = 7; // 다리 7로 설정.
-		}
-		bridges.add(new int[] {1, y, up, down}); // bridges 리스트에 저장
-	}
-	
-	private static int[][] copyArr(int[][] maps) {
-		int[][] temp = new int[N][M];
-		for(int i=0; i<N; i++) {
-			for(int j=0; j<M; j++) {
-				temp[i][j] = maps[i][j];
-			}
-		}
-		return temp;
 	}
 
 }
