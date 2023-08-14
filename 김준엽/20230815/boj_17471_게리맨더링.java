@@ -39,6 +39,7 @@ public class 게리맨더링 {
 		
 		br.close();
 	}
+	// 각 구역을 만드는 조합
 	static void comb(int depth, int start ,int target) {
 		if(depth == target) {
 			teamCheck = new boolean [N];
@@ -63,6 +64,7 @@ public class 게리맨더링 {
 			comb(depth+1, i+1, target);
 		}
 	}
+	//각 구역에 포함 되어있는 지 체크하는 함수 BFS
 	static boolean checkSector(int start ,boolean flag) {
 		int ans = 0;
 		for(int i=0; i<N;i++) {
