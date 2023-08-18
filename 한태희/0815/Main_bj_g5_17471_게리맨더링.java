@@ -3,23 +3,24 @@ import java.util.*;
 
 public class Main_bj_g5_17471_게리맨더링 {
 
-	static int N;
-	static boolean[] v;
+	static int N;//노드의 개수
+	static boolean[] v;//부분집합 visited
+	static int min_diff =999999999; //두 구역의 차이의 최솟값
 
-	static int[] val;
-	static Map<Integer, Set<Integer>> dict = new HashMap<>();
-	static int min =999999999;
+	static int[] population;//각 노드가 가지고 있는 인구 수
+	static Map<Integer, Set<Integer>> edgeDict = new HashMap<>(); //<key:노드 populationue:그 노드와의 연결>
 
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
 
-		val = new int[N+1];
+		population = new int[N+1];
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		for(int i=1;i<N+1;i++)
-			val[i] = Integer.parseInt(st.nextToken());
+			population[i] = Integer.parseInt(st.nextToken());
 		
-		//dict(node) = Set{node1, ndoe2, node3...}
+		//<key:노드 populationue:그 노드와의 연결>
+		//edgeDict(node) = Set{node1, ndoe2, node3...}
 		//형식으로 그래프를 표현함
 		for(int i=1;i<N+1;i++){
 			st = new StringTokenizer(br.readLine());
@@ -28,13 +29,13 @@ public class Main_bj_g5_17471_게리맨더링 {
 			for(int j=0;j<W;j++){
 				set.add(Integer.parseInt(st.nextToken()));
 			}
-			dict.put(i, set);
+			edgeDict.put(i, set);
 		}
 		v = new boolean[N];
 		subs(0);
 
-		if(min==999999999) min=-1;
-		System.out.println(min);
+		if(min_diff==999999999) min_diff=-1;
+		System.out.println(min_diff);
 		
 	}
 
@@ -73,7 +74,7 @@ public class Main_bj_g5_17471_게리맨더링 {
 
 			while(!que.isEmpty()){
 				int node = que.poll();
-				Set<Integer> nextSet = dict.get(node);
+				Set<Integer> nextSet = edgeDict.get(node);
 				if(nextSet !=null){
 					for(int next: nextSet){
 						if(!current_set.contains(next) && target_set1.contains(next)){
@@ -91,8 +92,6 @@ public class Main_bj_g5_17471_게리맨더링 {
 				return;
 			
 			//두번째 구역 계산
-			//함수로 모듈화해 깔끔하게 만들 수 있을것 같긴 한데
-			//귀찮음으로 막구현~~
 			current_set = new HashSet<>();
 			que = new ArrayDeque<>();
 			current_set.add(set2_start);
@@ -100,7 +99,7 @@ public class Main_bj_g5_17471_게리맨더링 {
 
 			while(!que.isEmpty()){
 				int node = que.poll();
-				Set<Integer> nextSet = dict.get(node);
+				Set<Integer> nextSet = edgeDict.get(node);
 				if(nextSet !=null){
 					for(int next: nextSet){
 						if(!current_set.contains(next) && target_set2.contains(next)){
@@ -122,14 +121,14 @@ public class Main_bj_g5_17471_게리맨더링 {
 			//그중에서 인구의 차이가 가장 적은 경우를 알 수 있다.
 			int A =0;
 			for(int node: target_set1){
-				A += val[node];
+				A += population[node];
 			}
 			int B =0;
 			for(int node: target_set2){
-				B += val[node];
+				B += population[node];
 			}
 
-			min = Math.min(min, Math.abs(A-B));
+			min_diff = Math.min(min_diff, Math.abs(A-B));
 
 			return;
 		}

@@ -1,10 +1,13 @@
 import java.util.*;
 import java.io.*;
 
-public class Main_bj_g5_2771_로봇_청소기_서울_20반_한태희 {
+public class Main_bj_g5_2771_로봇_청소기 {
 	static int[][] arr; //0 더러움 2 깨끗함 1 벽
 	static int N, M;
-	static int[] robot = new int[3];
+	static int[] robot = new int[3]; //{r, c, d}
+	//r: 로봇청소기의 ROW 좌표
+	//c: 로봇청소기의 COL 좌표
+	//d: 로봇청소기가 바라보는 방향
 
 	static int[] dr = {-1, 0, 1, 0}; //북, 동, 남, 서
 	static int[] dc = {0, 1, 0, -1};
@@ -78,6 +81,9 @@ public class Main_bj_g5_2771_로봇_청소기_서울_20반_한태희 {
 		}
 	}
 
+	/**로봇 청소기 위치에서 4방향 중 한곳이라도
+	* 청소가 필요한 구역이 있다면, true를 반환한다.
+	*/
 	static boolean needClean4way(){
 		for(int d=0;d<4;d++){
 			int r = robot[0] + dr[d];
