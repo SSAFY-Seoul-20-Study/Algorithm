@@ -52,6 +52,7 @@ public class Main {
                 else d--;
                 count++;
             }
+            //회전만 4번이 했다는 것은 주변에 청소할 곳이 없다는 것이므로 후진
             if(count == 4){
                 nx = x + backDx[d];
                 ny = y + backDy[d];
