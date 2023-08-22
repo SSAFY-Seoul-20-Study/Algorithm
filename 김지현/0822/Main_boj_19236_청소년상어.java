@@ -1,121 +1,138 @@
 package study_algo;
 
 import java.util.*;
-import java.util.zip.InflaterInputStream;
 import java.io.*;
 
+// 14248KB	128ms
 public class Main_boj_19236_청소년상어 {
 	
-	static int[][] a = new int[4][4]; // 물고기 번호 배열(1<= 번호 <= 16. 모두 다른 번호)
-	static int[][] b = new int[4][4]; // 방향 배열
-	static int[] shark = new int[3]; // 인덱스, 방향
-	static int res; // 상어가 먹은 물고기 번호 
+	private static class Fish{
+		int x;
+		int y;
+		int dir;
+		
+		public Fish(int x, int y, int dir) {
+			super();
+			this.x = x;
+			this.y = y;
+			this.dir = dir;
+		}
+	}
 	
-	static boolean[] v = new boolean[17]; // 물고기 번호 방문배열(1~16번)
+	static int ans;
+	static int[][] board = new int[4][4]; // 상어 : 0, 빈칸 : 99
+	static Fish[] fishes = new Fish[17]; // 물고기 16 + 상어 1
 	
-	static final int[] dx = {0,-1,-1, 0, 1, 1, 1, 0,-1};  // 1번~8번 순서대로.
-	static final int[] dy = {0, 0,-1,-1,-1, 0, 1, 1, 1};  // 1번~8번 순서대로.
+	static final int[] dx = {0,-1,-1, 0, 1, 1, 1, 0,-1};  // 1번~8번 순서대로, 0:상어
+	static final int[] dy = {0, 0,-1,-1,-1, 0, 1, 1, 1};  // 1번~8번 순서대로
 
 	public static void main(String[] args) throws Exception {
 		System.setIn(new FileInputStream("res/input_boj_19236.txt"));
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
-		
+
 		for(int i=0; i<4; i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j=0; j<4; j++) {
-				a[i][j] = Integer.parseInt(st.nextToken());
-				b[i][j] = Integer.parseInt(st.nextToken());
+				int id = Integer.parseInt(st.nextToken());
+				int dir = Integer.parseInt(st.nextToken());
+				board[i][j] = id;
+				fishes[id] = new Fish(i, j, dir);
 			}
 		}
+
+		// (0, 0) 에 상어 넣기
+		fishes[0] = new Fish(0, 0, fishes[board[0][0]].dir);
+		fishes[board[0][0]] = new Fish(-1, -1, -1);
+		ans = board[0][0];
+		board[0][0] = 0;
 		
-		// 처음 초기화 (0,0)
-		res = a[0][0]; // (0,0) 자리 물고기 번호 저장.
-		shark[2] = b[0][0]; // 상어 방향 설정
+		backTracking(ans);
+		System.out.println(ans);
 		
-		a[0][0] = -1; // 첫 상어 칸 -1으로 초기화
-		v[res] = true;
+		br.close();
+	}
+	private static void backTracking(int total) {
 		
 		moveFish();
-		int[][] copyA = copyArr(a);
-		int[][] copyB = copyArr(b);
 		
-		moveShark(copyA, copyB, 0);
+		// 배열 복사
+		int[][] tempBoard = copyArr(board);
 		
-	}
-	private static void moveShark(int[][] A, int[][] B, int score) {
+		Fish[] tempFishes = new Fish[17];
+		for(int i=0; i<tempFishes.length; i++) {
+			tempFishes[i] = fishes[i];
+		}
+
+		int x = fishes[0].x;
+		int y = fishes[0].y;
+		int dir = fishes[0].dir;
+		boolean isSharkOutOfBounds = false;
 		
-		for(int[] aa:A)System.out.println(Arrays.toString(aa)); System.out.println();
-		for(int[] bb:B)System.out.println(Arrays.toString(bb)); System.out.println();
-		System.out.println(Arrays.toString(shark));
-		
-		score += A[shark[0]][shark[1]];
-		A[shark[0]][shark[1]] = -1;
-		v[A[shark[0]][shark[1]]] = true;
-		
-		
-		res = Math.max(res, score);
-		moveFish(); // 물고기 이동
-		
-		int nx = shark[0];
-		int ny = shark[1];
-		
-		for(int cnt= 1; cnt<=3; cnt++) {
-			nx += dx[shark[2]];
-			ny += dy[shark[2]];
+		while(true) { // 상어가 공간을 벗어날 때 까지 반복
+			x += dx[dir];
+			y += dy[dir];
 			
-			if(!isRange(nx, ny)) break;
-			if(A[nx][ny] > 0) {
+			if(!isRange(x, y)) {
+				isSharkOutOfBounds = true;
+				break;
+			}
+			if(board[x][y] != 99) { // 빈칸이 아니라면(물고기가 있다면),
+				board[fishes[0].x][fishes[0].y] = 99;
+				fishes[0] = new Fish(x, y, fishes[board[x][y]].dir);
+				fishes[board[x][y]] = new Fish(-1, -1, -1); // 물고기 먹기
+				int eaten = board[x][y];
+				board[x][y] = 0;
 				
-//				score += A[nx][ny];
-				A[shark[0]][shark[1]] = 0; // 기존 상어가 있던 곳은 빈 곳으로 만들기.
-				shark[0] = nx; // 상어 위치 바꾸기
-				shark[1] = ny;
-				shark[2] = B[nx][ny]; // 방향 저장.
-				moveShark(A, B, score);
+				backTracking(total + eaten);
 				
+				// 배열 되돌리기
+				board = copyArr(tempBoard);
+				for(int i=0; i< tempFishes.length; i++) fishes[i] = tempFishes[i];
 			}
 		}
-	}
-	
-	private static void moveFish() {
-		for(int i=1; i<=16; i++) {
-			if(!v[i]) { // 번호가 작은 물고기부터 순서대로 이동.(상어가 먹은 물고기 번호 제외하고)
-				findFish(i);
-			}
-		}
-//		for(int[] aa:a)System.out.println(Arrays.toString(aa)); System.out.println();
-//		for(int[] bb:b)System.out.println(Arrays.toString(bb)); System.out.println();
-	}
-	private static void findFish(int target) {
-		for(int i=0; i<4; i++) {
-			for(int j=0; j<4; j++) {
-				if(a[i][j] == target) {
-					int nx = i + dx[b[i][j]];
-					int ny = j + dy[b[i][j]];
-					while(!isRange(nx, ny) || a[nx][ny] == -1) {
-						// 45도 반시계 회전
-						b[i][j] = (b[i][j] % 8)+1;
-						
-						nx = i + dx[b[i][j]];
-						ny = j + dy[b[i][j]];
-					}
-					if(a[nx][ny] > 0) swap(i,j, nx, ny);
-					return;
-				}
-			}
-		}
-	}
-	
-	private static void swap(int i, int j, int nx, int ny) {
-		int temp = a[i][j];
-		a[i][j] = a[nx][ny];
-		a[nx][ny] = temp;
 		
-		temp = b[i][j];
-		b[i][j] = b[nx][ny];
-		b[nx][ny] = temp;
+		// 상어가 공간 벗어남. ans 값 업데이트
+		if(isSharkOutOfBounds) ans = Integer.max(ans, total);
+		
 	}
+
+	// 물고기 번호 작은 순서대로 이동함.
+	private static void moveFish() {
+		// 번호가 작은 물고기부터 순서대로 이동.
+		for(int idx=1; idx<=16; idx++) {
+			Fish fish = fishes[idx];
+			
+			if(fishes[idx].x == -1) continue; // 먹은 물고기라면 continue
+			
+			for(int i=0; i<= 8; i++) {
+				int dir = (fish.dir + i) % 8;
+				if(dir == 0) dir = 8;
+				
+				int nx = fish.x + dx[dir];
+				int ny = fish.y + dy[dir];
+				
+				if(!isRange(nx, ny) || board[nx][ny] == 0) continue; // 이동못하면 방향 계속 바꾸기
+				
+				if(board[nx][ny] <= 16) { // 물고기가 있는 칸이면
+					// swap
+					int targetIdx = board[nx][ny]; 
+					board[nx][ny] = idx;
+					board[fish.x][fish.y]= targetIdx;
+					
+					fishes[idx] = new Fish(nx, ny, dir);
+					fishes[targetIdx] = new Fish(fish.x, fish.y, fishes[targetIdx].dir);
+				} else { // 빈칸이면
+					board[nx][ny] = idx;
+					board[fish.x][fish.y] = 99;
+					fishes[idx] = new Fish(nx, ny, dir);
+				}
+				break;
+			}
+		}
+
+	}
+	
 	// 배열 복사하는 메서드
 	private static int[][] copyArr(int[][] arr){
 		int[][] temp = new int[4][4];
