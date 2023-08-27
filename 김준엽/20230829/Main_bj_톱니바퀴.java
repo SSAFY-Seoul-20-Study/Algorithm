@@ -5,6 +5,7 @@ public class Main_bj_톱니바퀴 {
     static int K, ans;
     static boolean check[];
     static int rotationDir[];
+    //
     public static void main(String args[]) throws Exception
     {
         System.setIn(new FileInputStream("/Users/kim-junyup/IdeaProjects/algorithmn/src/res.txt"));
