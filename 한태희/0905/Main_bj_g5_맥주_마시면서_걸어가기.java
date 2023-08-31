@@ -35,12 +35,29 @@ public class Main_bj_g5_맥주_마시면서_걸어가기 {
 			st = new StringTokenizer(br.readLine());
 			endC[0] = Integer.parseInt(st.nextToken());
 			endC[1] = Integer.parseInt(st.nextToken());
+			endC[2] = INF;
 
 			Queue<int[]> q = new ArrayDeque<>();
 			q.offer(startC);
-			
-			while()
 
+			while (q.isEmpty() == false) {
+				int[] cord = q.poll();
+				// System.out.println(Arrays.toString(cord));
+
+				if (getDist(cord, endC) <= 1000) {
+					System.out.println("happy");
+					return;
+				}
+
+				for (int[] convC : convC_arr) {
+					if (getDist(cord, convC) <= 1000 && convC[2] > cord[2]) {
+						convC[2] = cord[2] + 1;
+						q.offer(convC);
+					}
+				}
+			}
+
+			System.out.println("sad");
 		}
 
 		br.close();
@@ -51,6 +68,10 @@ public class Main_bj_g5_맥주_마시면서_걸어가기 {
 			return true;
 		else
 			return false;
+	}
+
+	static int getDist(int[] cord1, int[] cord2) {
+		return Math.abs(cord1[0] - cord2[0]) + Math.abs(cord1[1] - cord2[1]);
 	}
 
 }
