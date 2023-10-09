@@ -3,13 +3,20 @@ package main;
 import java.io.*;
 import java.util.*;
 
+//문제 조건에서 MST라고 주어졌기에 굉장히 쉬운 문제
+//MST가 아니었다면....난이도가 몇배는 뛰었을거라 생각한다 끔찍
+
 public class Main_BJ_12784_인하니카공화국 {
 	public static int T, N, M;
 	public static ArrayList<int[]>[] al;
 	public static boolean[] visited;
 	public static int[] dp;
 	
+	
+	//사실 전형적인 dfs문제. 리프 노드일때와 아닐때만 구분해서 dp 값을 넣어주면 되는 문제이다.
 	public static boolean dfs(int nowisland,int dynamite) {
+		//섬이 두개밖에 없을경우, 1번 섬에 대한 예외처리를 해주지 않으면 다음 섬이 있음에도 그대로 종료된다.
+		//루트 섬 (1번)에 대한 엣지케이스를 꼭 잊지 말자
 		if(al[nowisland].size()==1 && nowisland!=1) {
 			dp[nowisland] = dynamite;
 			return true;
@@ -66,7 +73,6 @@ public class Main_BJ_12784_인하니카공화국 {
 			visited[1]  = true;
 			dp[1] = Integer.MAX_VALUE;
 			dfs(1,dp[1]);
-			//System.out.println(Arrays.toString(dp));
 			System.out.println(dp[1]);
 		}
 		
