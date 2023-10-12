@@ -1,6 +1,29 @@
 import java.util.*;
 import java.io.*;
 
+/*
+다 풀어놓고도 도대체 내가 뭘 푼건지 모르겠는 문제
+
+문제의 입력은 2차원 배열로 주어지지만, 문제 속 블록들의 작동들은 좌하우상 순서로 골뱅이처럼 돌아가는 1차원 배열의 형태를 띄고 있음을 알 수 있음.
+contvert 함수에서 2차원 배열을 회오리 순서대로 1차원 배열로 변환함.
+여기서 만들어진 배열은 inx:0이 중앙 위치이며, 그 뒤 순서대로 회오리 위치가 됨.
+
+블리자드 마법을 구현하기 위해서 1차원 배열에서의 위치를 표현하는 점화식을 찾음.
+블리자드 함수에는 상하좌우 방향과 최종거리 s가 주어짐.
+현재 위치가 pos, 나아간 칸이 d라고 하면 (1<=d<=s)
+위쪽:     pos(d) = pos(d-1) + 8*(d-1) + 7
+아래쪽:   pos(d) = pos(d-1) + 8*(d-1) + 3
+왼쪽:     pos(d) = pos(d-1) + 8*(d-1) + 1
+오른쪽:   pos(d) = pos(d-1) + 8*(d-1) + 5
+(초기조건으로, pos(0) = 0)
+
+move 함수는 배열 밀기로 간단하게 구현
+
+explode 함수는 4이상의 크기를 가진 그룹을 찾아 값을 0으로 만들고, bleed 함수는 문제에 나와있는 조건대로 (그룹 크기, 그룹원의 숫자)로 그룹을 변환함.
+사실 이 두개는 그룹 만드는 함수를 하나로 합쳐서 더 간단하게 구현 가능할것 같긴 함.
+
+ */
+
 public class Main_bj_g1_21611_마법사_상어와_블리자드 {
 	static int[] arr;
 	static int ans;
@@ -31,10 +54,6 @@ public class Main_bj_g1_21611_마법사_상어와_블리자드 {
 			while (explode()) {
 			}
 			breed();
-			System.out.println();
-			System.out.println((m + 1) + "번째 블리자드 후");
-			System.out.println(Arrays.toString(arr));
-			System.out.println();
 		}
 
 		System.out.println(ans);
@@ -93,8 +112,6 @@ public class Main_bj_g1_21611_마법사_상어와_블리자드 {
 			point += 8 * d + k;
 			arr[point] = 0;
 		}
-		System.out.println("블리자드");
-		System.out.println(Arrays.toString(arr));
 		move();
 		return arr;
 	}
@@ -108,8 +125,6 @@ public class Main_bj_g1_21611_마법사_상어와_블리자드 {
 			}
 		}
 		arr = ret;
-		System.out.println("밀어내기");
-		System.out.println(Arrays.toString(arr));
 	}
 
 	static boolean explode() {
@@ -144,8 +159,6 @@ public class Main_bj_g1_21611_마법사_상어와_블리자드 {
 			}
 		}
 
-		System.out.println("폭발");
-		System.out.println(Arrays.toString(arr));
 		move();
 		return ret;
 	}
@@ -186,7 +199,5 @@ public class Main_bj_g1_21611_마법사_상어와_블리자드 {
 			ret[i] = temp[i];
 		}
 		arr = ret;
-		System.out.println("증식");
-		System.out.println(Arrays.toString(arr));
 	}
 }
