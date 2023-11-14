@@ -23,7 +23,7 @@ class Solution {
         
         while(true) {
             if(sum1 == sum2) return answer;
-            if(answer > queue1.length + queue2.length) return -1;
+            if(answer > queue1.length + queue2.length + 1) return -1;
             
             if(sum1 < sum2) {
                 int tmp = q2.poll();
