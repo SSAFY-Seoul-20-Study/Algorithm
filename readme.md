@@ -25,9 +25,9 @@
 ## 👩‍👩‍👦‍👦 참여자
 <div align="center">
 
-|     ![지현](https://avatars.githubusercontent.com/u/31675698?v=4)     | ![준엽](https://avatars.githubusercontent.com/u/53340295?v=4) |![세은](https://avatars.githubusercontent.com/u/48899016?v=4)|![수진](https://avatars.githubusercontent.com/u/77006790?v=4)|![태희](https://avatars.githubusercontent.com/u/118531617?v=4)|
-|:---------------------------------------------------------------:|:-------------------------------------------------------:|:---:|:-----------------------------------------------------:|:------------------------------------------------------:
-|                [지현](https://github.com/KimJyun)                 |         [준엽](https://github.com/JunYupK)          | [세은](https://github.com/ChoiSeEun)|           [수진](https://github.com/ss0510s)            |            [태희](https://github.com/nyanpasu-life)             | 
+|     ![지현](https://avatars.githubusercontent.com/u/31675698?v=4)     | ![준엽](https://avatars.githubusercontent.com/u/53340295?v=4) |![세은](https://avatars.githubusercontent.com/u/48899016?v=4)|![수진](https://avatars.githubusercontent.com/u/77006790?v=4)|![태희](https://avatars.githubusercontent.com/u/118531617?v=4)|![동준](https://avatars.githubusercontent.com/u/77885587?v=4)
+|:---------------------------------------------------------------:|:-------------------------------------------------------:|:---:|:-----------------------------------------------------:|:------------------------------------------------------:|:---------------------------------------------------------------:
+|                [지현](https://github.com/KimJyun)                 |         [준엽](https://github.com/JunYupK)          | [세은](https://github.com/ChoiSeEun)|           [수진](https://github.com/ss0510s)            |            [태희](https://github.com/nyanpasu-life)             | [동준](https://github.com/djh0211)
 
 </div>
 
