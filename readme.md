@@ -15,6 +15,11 @@
 2. 자신의 문제 풀이 방식 발표 후 추가 내용 토론
 3. 다음주 문제 선정
 
+- ### 코드 규칙
+1. main 에서 [본인 이름] 으로 branch 를 새로 만든 후 본인 branch에 commit, push 하기 (main으로 PR 보내기)
+2. main 으로 PR 보내기
+3. 본인 외의 스터디원이 승인 시 main 으로 merge (merge 후 본인 branch는 자동으로 삭제됨)
+
 - ### PR 규칙
 1. 매 주 정해진 2개의 문제를 하나의 PR로 올린다.
 2. self-assign 후 week 라벨 달기
