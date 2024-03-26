@@ -40,7 +40,6 @@ public class Main_bj_p5_3197_백조의_호수 {
             }
         }
         
-        // Solution logic starts here
         int Day = 0;
         Swan_Q.add(new Point(Swan_Pos.x, Swan_Pos.y));
         Visit[Swan_Pos.x][Swan_Pos.y] = true;
